@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
-    public bool isRed = false, isYellow = false, isGreen = false, isBlue = false;
+    public int color = 0;   //1 - yellow, 2 - blue, 3 - red, 4 - green
     public bool hasRed = false, hasYellow = false, hasGreen = false, hasBlue = false;
     public int level = 0;
     public Vector3 offset = new Vector3(0f,0f,0f);
     public bool isPlayable = true;
-    
-    public bool ValidMove(Piece[,] board, int x1,int y1,int x2,int y2)
+    public int x, y;
+
+    /*public bool ValidMove(Piece[,] board, int x1,int y1,int x2,int y2)
     {
         int deltaMoveX, deltaMoveY;
 
@@ -55,5 +56,5 @@ public class Piece : MonoBehaviour
         }
 
         return false;
-    }
+    }*/
 }

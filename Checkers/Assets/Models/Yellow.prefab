@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6658640092310192501}
   - component: {fileID: 8902713400925238719}
   - component: {fileID: 3998556213895778882}
+  - component: {fileID: 2759319600168459342}
   m_Layer: 0
   m_Name: Yellow
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6956995839980835946}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 3, y: 0.6000001, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
@@ -101,3 +102,18 @@ MonoBehaviour:
   hasGreen: 0
   hasBlue: 0
   level: 0
+  offset: {x: 0, y: 0, z: 0}
+  isPlayable: 1
+--- !u!65 &2759319600168459342
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6956995839980835946}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.016929995, y: 0.016929992, z: 0.004999992}
+  m_Center: {x: -4.656613e-10, y: 4.656612e-10, z: 0.0024999974}
