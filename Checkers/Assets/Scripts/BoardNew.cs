@@ -4,13 +4,13 @@ using UnityEngine;
 public class Steps
 {
     float[,,] OneSteps;
-    public int count;
+    public int count;   //id
 }
 
 public class BoardNew : MonoBehaviour
 {
     public GameObject sphere;
-    public GameObject yellowPiece;
+    public GameObject yellowPiece;  //may be changed to materials switch
     public GameObject greenPiece;
     public GameObject bluePiece;
     public GameObject redPiece;
@@ -21,7 +21,7 @@ public class BoardNew : MonoBehaviour
     public GameObject BlueP;
 
     public Piece[,] pieces = new Piece[10, 10];
-    public Sphere[,] spheres = new Sphere[10, 10];
+
     private List<Sphere> LisSpheres = new List<Sphere>();
 
     private Vector3 PieceOffset = new Vector3(0.5f, 0.3f, 0.5f);
@@ -45,9 +45,16 @@ public class BoardNew : MonoBehaviour
 
     private Player Turn;
 
-    public void HideSpheres(Player pl, Piece P)
+    public void HideSpheres(Player pl, Piece P, Sphere S)
     {
+        if (S == null)  //not selection
+        {
 
+        }
+        else
+        {
+
+        }
     }
 
     public void ShowSpheres(Player pl, Piece P)
@@ -60,18 +67,38 @@ public class BoardNew : MonoBehaviour
 
     }
 
-    public void EndTurn(Player pl)
+    private void EndTurn(Player pl)
     {
 
     }
 
-    public int SpheresIntoId(Sphere SP)
+    private void EndGame()
+    {
+
+    }
+
+    private List<Steps> AllPossibleSteps(Player pl)
+    {
+        return null;
+    }
+
+    private float[,,,] ConvertToFloatArr(List<Steps> stp)
+    {
+        return null;
+    }
+
+    private int InterBotFunction()
+    {
+        return 0;
+    }
+
+    private int SpheresIntoId(Sphere SP)
     {
         int id = 0;
         return id;
     }
 
-    private void ClickManager(Player Turn){
+    private void ClickManager(Player turn){
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -89,57 +116,64 @@ public class BoardNew : MonoBehaviour
                         if(SelPiece == PieC)
                         {
                             SelPiece = null;
-                            HideSpheres(Turn, PieC);
+                            HideSpheres(turn, PieC, null);
                             //return;
-                        }else if (Turn.PieceList.Contains(PieC))
+                        }else if (turn.PieceList.Contains(PieC))
                         {
-                            HideSpheres(Turn, PieC);
+                            HideSpheres(turn, PieC, null);
                             SelPiece = PieC;
-                            ShowSpheres(Turn, PieC);
+                            ShowSpheres(turn, PieC);
                             //return;
                         }else if(SelPiece == null)
                         {
                             SelPiece = PieC;
-                            ShowSpheres(Turn, PieC);
+                            ShowSpheres(turn, PieC);
                             //return;
                         }
                     }else if (Caught.TryGetComponent<Sphere>(out SphC))
                     {
                         int Id = SpheresIntoId(SphC);
-                        HideSpheres(Turn, PieC);
-                        MakeMove(Turn, Id);
+                        HideSpheres(turn, PieC, SphC);
+                        MakeMove(turn, Id);
                         SelPiece = null;
-                        EndTurn(Turn);
+                        EndTurn(turn);
                     }
                 }
             }
-        }else if (Turn.isBot)
+        }else if (turn.isBot)
         {
 
         }
     }
 
-    private void GeneratePiece(Player play, GameObject GoPiece, int x, int y)   //Generate, add GoPiece to play's List<piece> and move to x,y
+    public void GeneratePiece(Player play, GameObject GoPiece, int x, int y, bool Playable)   //Generate, add GoPiece to play's List<piece> and move to x,y
     {
-        GameObject GoP = Instantiate(GoPiece) as GameObject;
-        Piece Pie = GoP.GetComponent<Piece>();
-        pieces[x, y] = Pie;
-        Pie.x = x;
-        Pie.y = y;
+        if (Playable)
+        {
+            GameObject GoP = Instantiate(GoPiece) as GameObject;
+            Piece Pie = GoP.GetComponent<Piece>();
+            pieces[x, y] = Pie;
+            Pie.x = x;
+            Pie.y = y;
 
-        Pie.transform.SetParent(play.transform);
-        play.PieceList.Add(Pie);
+            Pie.transform.SetParent(play.transform);
+            play.PieceList.Add(Pie);
 
-        MovePiece(Pie, pieces, x, y);
+            MovePiece(Pie, x, y);
+        }
+        else
+        {
+            pieces[x,y].GenNonPlayablePiece(pieces, GoPiece);
+        }
     }
 
-    private void MovePiece(Piece P, Piece[,] PM, int x, int y)  //Change position of P and array PM
+    public void MovePiece(Piece P, int x, int y)  //Change position of P and array PM
     {
-        PM[(int)P.transform.position.x, (int)P.transform.position.y] = null;
-        PM[x, y] = P;
+        pieces[(int)P.transform.position.x, (int)P.transform.position.y] = null;
+        pieces[x, y] = P;
         P.x = x;
         P.y = y;
-        P.transform.position = (Vector3.right * x) + (Vector3.forward * y) + BoardOffset + PieceOffset;
+        P.transform.position = (Vector3.right * x) + (Vector3.forward * y) + BoardOffset + PieceOffset + P.offset;
     }
 
     private void GeneratePieceSet(Player play)  //Generate set for play
@@ -160,7 +194,7 @@ public class BoardNew : MonoBehaviour
                 {
                     for (int z = 1; z <= 2; z++)
                     {
-                        GeneratePiece(play, yellowPiece, x, z);
+                        GeneratePiece(play, yellowPiece, x, z, true);
                     }
                 }
                 break;
@@ -175,7 +209,7 @@ public class BoardNew : MonoBehaviour
                 {
                     for (int x = 1; x <= 2; x++)
                     {
-                        GeneratePiece(play, bluePiece, x, z);
+                        GeneratePiece(play, bluePiece, x, z, true);
                     }
                 }
                 break;
@@ -190,7 +224,7 @@ public class BoardNew : MonoBehaviour
                 {
                     for (int z = 7; z <= 8; z++)
                     {
-                        GeneratePiece(play, redPiece, x, z);
+                        GeneratePiece(play, redPiece, x, z, true);
                     }
                 }
                 break;
@@ -205,7 +239,7 @@ public class BoardNew : MonoBehaviour
                 {
                     for (int x = 7; x <= 8; x++)
                     {
-                        GeneratePiece(play, greenPiece, x, z);
+                        GeneratePiece(play, greenPiece, x, z, true);
                     }
                 }
                 break;
