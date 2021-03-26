@@ -93,17 +93,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc4658698aedc6419674fd3b8dc7de7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isRed: 1
-  isYellow: 0
-  isGreen: 0
-  isBlue: 0
+  color: 3
   hasRed: 0
   hasYellow: 0
   hasGreen: 0
   hasBlue: 0
-  level: 0
-  offset: {x: 0, y: 0, z: 0}
+  level: 1
   isPlayable: 1
+  offset: {x: 0, y: 0, z: 0}
+  x: 0
+  y: 0
+  child: []
+  yPiece: {fileID: 6956995839980835946, guid: 75c7713bcded1644a88c4cab98f33aee, type: 3}
+  gPiece: {fileID: 606974655052094152, guid: 32cf40c1431370549b05d4f5c82904ea, type: 3}
+  bPiece: {fileID: 6409796130088592656, guid: 2595d4903fda56041af1d24d8f27baa8, type: 3}
+  rPiece: {fileID: 4097515061439705783}
 --- !u!65 &7641269364829625826
 BoxCollider:
   m_ObjectHideFlags: 0

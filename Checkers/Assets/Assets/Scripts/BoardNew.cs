@@ -32,6 +32,7 @@ public class BoardNew : MonoBehaviour
 
     public List<Piece[,]> AllStepsTemp;
     public List<List<Piece[,]>> AllSteps;
+    public bool[,] Blocks = new bool[10, 10];
 
     public int[,,,] stepsBot;
 
@@ -40,6 +41,288 @@ public class BoardNew : MonoBehaviour
     private Queue<Player> PlayerQueue = new Queue<Player>();
 
     private Player Turn = null;
+
+    private void SetBlock(bool[,] bl)
+    {
+        for(int x = 0; x < 10; x++)
+        {
+            for(int y = 0; y < 10; y++)
+            {
+                if(((x >= 0) && (x <= 2) && (y + 1 >= 0 && y + 1 <= 2 || y + 1 >= 7 && y + 1 <= 9) || (x >= 7) && (x <= 9) && (y + 1 >= 0 && y + 1 <= 2 || y + 1 >= 7 && y + 1 <= 9)))
+                {
+                    bl[x, y] = false;
+                }
+                else
+                {
+                    bl[x, y] = true;
+                }
+            }
+        }
+    }   //READY
+
+    public void PossibleMoves(bool killed, int x, int y)
+    {
+        int col = pieces[x, y].color;
+        int lv = pieces[x, y].level;
+
+        for(int i = 1; i <= lv; i++)
+        {
+            if (lv == 1)
+            {
+                if (col == 1 || col == 3)
+                {
+                    if ((x + 1) < 10 && Blocks[x + 1, y])
+                    {
+                        if (pieces[x + 1, y] == null && !killed)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x + 1;
+                            S.y = y;
+                            LisSpheres.Add(S);
+                        }
+                        else if (pieces[x + 1, y].color != pieces[x, y].color && x + 2 < 10 && Blocks[x + 2, y] && pieces[x + 2, y] == null)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x + 2;
+                            S.y = y;
+                            S.ToBeKilled.Add(pieces[x + 1, y]);
+                            LisSpheres.Add(S);
+                            PossibleMoves(true, x + 2, y);
+                        }
+                    }
+                    if ((x - 1) > 0 && Blocks[x - 1, y])
+                    {
+                        if (pieces[x - 1, y] == null && !killed)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x - 1;
+                            S.y = y;
+                            LisSpheres.Add(S);
+                        }
+                        else if (pieces[x - 1, y].color != pieces[x, y].color && x - 2 > 0 && Blocks[x - 2, y] && pieces[x - 2, y] == null)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x - 2;
+                            S.y = y;
+                            S.ToBeKilled.Add(pieces[x - 1, y]);
+                            LisSpheres.Add(S);
+                            PossibleMoves(true, x - 2, y);
+                        }
+                    }
+                    //check 2 & 4 sides
+                    if (col == 1)
+                    {
+                        if ((y + 1) < 10 && Blocks[x, y + 1])
+                        {
+                            if (pieces[x, y + 1] == null && !killed)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x;
+                                S.y = y + 1;
+                                LisSpheres.Add(S);
+                            }
+                            else if (pieces[x, y + 1].color != pieces[x, y].color && y + 2 < 10 && Blocks[x, y + 2] && pieces[x, y + 2] == null)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x;
+                                S.y = y + 2;
+                                S.ToBeKilled.Add(pieces[x, y + 1]);
+                                LisSpheres.Add(S);
+                                PossibleMoves(true, x, y + 2);
+                            }
+                        }
+                    }   //check 3 side
+                    else
+                    {
+                        if ((y - 1) > 0 && Blocks[x, y - 1])
+                        {
+                            if (pieces[x, y - 1] == null && !killed)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x;
+                                S.y = y - 1;
+                                LisSpheres.Add(S);
+                            }
+                            else if (pieces[x, y - 1].color != pieces[x, y].color && y - 2 > 0 && Blocks[x, y - 2] && pieces[x, y - 2] == null)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x;
+                                S.y = y - 2;
+                                S.ToBeKilled.Add(pieces[x, y - 1]);
+                                LisSpheres.Add(S);
+                                PossibleMoves(true, x, y - 2);
+                            }
+                        }
+                    }   //check 1 side
+                }
+                else if (col == 2 || col == 4)
+                {
+                    if ((y + 1) < 10 && Blocks[x, y + 1])
+                    {
+                        if (pieces[x, y + 1] == null && !killed)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x;
+                            S.y = y + 1;
+                            LisSpheres.Add(S);
+                        }
+                        else if (pieces[x, y + 1].color != pieces[x, y].color && y + 2 < 10 && Blocks[x, y + 2] && pieces[x, y + 2] == null)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x;
+                            S.y = y + 2;
+                            S.ToBeKilled.Add(pieces[x, y + 1]);
+                            LisSpheres.Add(S);
+                            PossibleMoves(true, x, y + 2);
+                        }
+                    }
+                    if ((y - 1) > 0 && Blocks[x, y - 1])
+                    {
+                        if (pieces[x, y - 1] == null && !killed)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x;
+                            S.y = y - 1;
+                            LisSpheres.Add(S);
+                        }
+                        else if (pieces[x, y - 1].color != pieces[x, y].color && y - 2 > 0 && Blocks[x, y - 2] && pieces[x, y - 2] == null)
+                        {
+                            Sphere S = new Sphere();
+                            S.x = x;
+                            S.y = y - 2;
+                            S.ToBeKilled.Add(pieces[x, y - 1]);
+                            LisSpheres.Add(S);
+                            PossibleMoves(true, x, y - 2);
+                        }
+                    }
+                    //check 1 & 3 sides
+                    if (col == 2)
+                    {
+                        if ((x + 1) < 10 && Blocks[x + 1, y])
+                        {
+                            if (pieces[x + 1, y] == null && !killed)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x + 1;
+                                S.y = y;
+                                LisSpheres.Add(S);
+                            }
+                            else if (pieces[x + 1, y].color != pieces[x, y].color && x + 2 < 10 && Blocks[x + 2, y] && pieces[x + 2, y] == null)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x + 2;
+                                S.y = y;
+                                S.ToBeKilled.Add(pieces[x + 1, y]);
+                                LisSpheres.Add(S);
+                                PossibleMoves(true, x + 2, y);
+                            }
+                        }
+                    }   //check 4 side
+                    else
+                    {
+                        if ((x - 1) > 0 && Blocks[x - 1, y])
+                        {
+                            if (pieces[x - 1, y] == null && !killed)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x - 1;
+                                S.y = y;
+                                LisSpheres.Add(S);
+                            }
+                            else if (pieces[x - 1, y].color != pieces[x, y].color && x - 2 > 0 && Blocks[x - 2, y] && pieces[x - 2, y] == null)
+                            {
+                                Sphere S = new Sphere();
+                                S.x = x - 2;
+                                S.y = y;
+                                S.ToBeKilled.Add(pieces[x - 1, y]);
+                                LisSpheres.Add(S);
+                                PossibleMoves(true, x - 2, y);
+                            }
+                        }
+                    }   //check 2 side
+                }
+            }
+            else
+            {
+                if ((x + i) < 10 && Blocks[x + i, y])
+                {
+                    if (pieces[x + i, y] == null && !killed)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x + i;
+                        S.y = y;
+                        LisSpheres.Add(S);
+                    }
+                    else if (pieces[x + i, y].color != pieces[x, y].color && x + i + 1 < 10 && Blocks[x + i + 1, y] && pieces[x + i + 1, y] == null)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x + i + 1;
+                        S.y = y;
+                        S.ToBeKilled.Add(pieces[x + i, y]);
+                        LisSpheres.Add(S);
+                        PossibleMoves(true, x + i + 1, y);
+                    }
+                }
+                if ((x - i) > 0 && Blocks[x - i, y])
+                {
+                    if (pieces[x - i, y] == null && !killed)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x - i;
+                        S.y = y;
+                        LisSpheres.Add(S);
+                    }
+                    else if (pieces[x - i, y].color != pieces[x, y].color && x - i - 1 > 0 && Blocks[x - i - 1, y] && pieces[x - i - 1, y] == null)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x - i - 1;
+                        S.y = y;
+                        S.ToBeKilled.Add(pieces[x - i, y]);
+                        LisSpheres.Add(S);
+                        PossibleMoves(true, x - i - 1, y);
+                    }
+                }
+                if ((y + i) < 10 && Blocks[x, y + i])
+                {
+                    if (pieces[x, y + i] == null && !killed)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x;
+                        S.y = y + i;
+                        LisSpheres.Add(S);
+                    }
+                    else if (pieces[x, y + i].color != pieces[x, y].color && y + i + 1 < 10 && Blocks[x, y + i + 1] && pieces[x, y + i + 1] == null)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x;
+                        S.y = y + i + 1;
+                        S.ToBeKilled.Add(pieces[x, y + i]);
+                        LisSpheres.Add(S);
+                        PossibleMoves(true, x, y + i + 1);
+                    }
+                }
+                if ((y - i) > 0 && Blocks[x, y - i])
+                {
+                    if (pieces[x, y - i] == null && !killed)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x;
+                        S.y = y - i;
+                        LisSpheres.Add(S);
+                    }
+                    else if (pieces[x, y - i].color != pieces[x, y].color && y - i - 1 > 0 && Blocks[x, y - i - 1] && pieces[x, y - i - 1] == null)
+                    {
+                        Sphere S = new Sphere();
+                        S.x = x;
+                        S.y = y - i - 1;
+                        S.ToBeKilled.Add(pieces[x, y - i]);
+                        LisSpheres.Add(S);
+                        PossibleMoves(true, x, y - i - 1);
+                    }
+                }
+            }
+        }
+    }   //REFACTORING NEEDED
 
     public void MakeMove(Player pl, int step)
     {
@@ -54,24 +337,24 @@ public class BoardNew : MonoBehaviour
     private void EndGame()
     {
 
-    }   //TO DO
+    }   //TO DO LATER
 
     private int[,,,] AllPossibleSteps(Player pl)
     {
         return null;
-    }   //TO DO
+    }   //TO DO LATER
 
     private float[,,,] ConvertToFloatArr(int[,,,] stp)
     {
         return null;
-    }   //TO DO
+    }   //TO DO LATER
 
     private void InterBotFunction(Player pl)
     {
         AllPossibleSteps(pl);
         ConvertToFloatArr(stepsBot);
         // manipulations with stepID
-    }   //TO DO
+    }   //TO DO LATER
 
     private int SpheresIntoId(Sphere SP)
     {
@@ -261,6 +544,7 @@ public class BoardNew : MonoBehaviour
 
     public void ChangeCam(int color)
     {
+        Debug.Log(1);
         switch (color)
         {
             case 1:
@@ -312,6 +596,7 @@ public class BoardNew : MonoBehaviour
 
     void Start()
     {
+        SetBlock(Blocks);
         GeneratePieceSet(Green);
         GeneratePieceSet(Red);
         GeneratePieceSet(Yellow);
